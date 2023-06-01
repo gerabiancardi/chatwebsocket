@@ -20,3 +20,21 @@ app.use("/", viewsRouter)
 const server = app.listen(8080, ()=>console.log("Server runing"));
 
 const io = new Server (server);
+
+const messages =[];
+
+io.on("connection", socket=>{
+    console.log("Nuevo Cliente conectado");
+
+
+socket.on("message", data=>{
+    messages.push(data);
+    io.emit("messageLogs", messages);
+});
+
+socket.on("authenticated", data=>{
+    socket.emit("messageLogs", messages);
+    socket.broadcast.emit("NewUserConnected", data);
+});
+
+});
